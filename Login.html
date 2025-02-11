@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link href="../CSS Style/style2.css" rel="stylesheet">
+    <link href="../Images/LOGO.png" rel="icon" type="image/png">
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>Login</title>
+</head>
+<body>
+<div class="header">
+    <img alt="LOGO" class="logo" src="../Images/LOGO.png">
+    <h1>Welcome to Youth Connect Foundation</h1>
+</div>
+<div class="form-container">
+    <h2>Login</h2>
+    <form id="loginForm" onsubmit="return loginUser()">
+        <label for="username">Username:</label>
+        <input id="username" name="username" required type="text">
+        <label for="password">Password:</label>
+        <div class="password-container">
+            <input id="password" name="password" required type="password">
+            <span class="toggle-password" onclick="togglePasswordVisibility('password')"></span>
+        </div>
+        <button type="submit">Login</button>
+    </form>
+    <p>Don't have an account? <a href="register.html">Register here</a></p>
+    <p class="login-message" id="loginMessage"></p>
+</div>
+<div id="footer"></div>
+<script src="../Javascript/navbar.js"></script>
+<script>
+    function loginUser() {
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+        const user = JSON.parse(localStorage.getItem('user'));
+        const loginMessage = document.getElementById('loginMessage');
+
+        if (user && user.username === username && user.password === password) {
+            loginMessage.textContent = 'Login successful!';
+            loginMessage.style.color = 'green';
+            setTimeout(() => {
+                window.location.href = 'home.html';
+            }, 2000);
+            return false;
+        } else {
+            loginMessage.textContent = 'Invalid username or password.';
+            loginMessage.style.color = 'red';
+            return false;
+        }
+    }
+
+    function togglePasswordVisibility(id) {
+        const passwordField = document.getElementById(id);
+        if (passwordField.type === 'password') {
+            passwordField.type = 'text';
+        } else {
+            passwordField.type = 'password';
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', loadFooter);
+</script>
+</body>
+</html>

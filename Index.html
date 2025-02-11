@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="../CSS Style/style2.css">
+    <link rel="icon" href="../Images/LOGO.png" type="image/png">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+</head>
+<body>
+    <div class="header">
+        <img src="../Images/LOGO.png" alt="LOGO" class="logo">
+        <h1>Welcome to Youth Connect Foundation</h1>
+    </div>
+    <div class="form-container">
+        <h2>Register</h2>
+        <form id="registerForm" onsubmit="return registerUser()">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required>
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+            <label for="password">Password:</label>
+            <div class="password-container">
+                <input type="password" id="password" name="password" required>
+                <span class="toggle-password" onclick="togglePasswordVisibility('password')"></span>
+            </div>
+            <small>Password must be at least 8 characters long and contain at least one uppercase letter, one number, and one special character.</small>
+            <label for="confirm-password">Confirm Password:</label>
+            <div class="password-container">
+                <input type="password" id="confirm-password" name="confirm-password" required>
+                <span class="toggle-password" onclick="togglePasswordVisibility('confirm-password')"></span>
+            </div>
+            <button type="submit">Register</button>
+        </form>
+        <p>Already have an account? <a href="login.html">Login here</a></p>
+        <p id="registerMessage" class="register-message"></p>
+    </div>
+    <div id="footer"></div>
+    <script src="../Javascript/navbar.js"></script>
+    <script>
+        function registerUser() {
+            const username = document.getElementById('username').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+            const passwordPattern = /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+            const registerMessage = document.getElementById('registerMessage');
+
+            if (!passwordPattern.test(password)) {
+                registerMessage.textContent = 'Password must be at least 8 characters long and contain at least one uppercase letter, one number, and one special character.';
+                registerMessage.style.color = 'red';
+                return false;
+            }
+
+            if (password !== confirmPassword) {
+                registerMessage.textContent = 'Passwords do not match.';
+                registerMessage.style.color = 'red';
+                return false;
+            }
+
+            const users = JSON.parse(localStorage.getItem('users')) || [];
+            const userExists = users.some(user => user.username === username || user.email === email);
+
+            if (userExists) {
+                registerMessage.textContent = 'Username or email already exists.';
+                registerMessage.style.color = 'red';
+                return false;
+            }
+
+            const user = {
+                username: username,
+                email: email,
+                password: btoa(password) // Encode the password using base64 (not secure, just for demonstration)
+            };
+
+            users.push(user);
+            localStorage.setItem('users', JSON.stringify(users));
+            registerMessage.textContent = 'Registration successful! Please log in.';
+            registerMessage.style.color = 'green';
+            setTimeout(() => {
+                window.location.href = 'login.html';
+            }, 2000);
+            return false;
+        }
+
+        function togglePasswordVisibility(id) {
+            const passwordField = document.getElementById(id);
+            if (passwordField.type === 'password') {
+                passwordField.type = 'text';
+            } else {
+                passwordField.type = 'password';
+            }
+        }
+
+        function loadFooter() {
+            fetch('footer.html')
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('footer').innerHTML = data;
+                });
+        }
+
+        document.addEventListener('DOMContentLoaded', loadFooter);
+    </script>
+</body>
+</html>
